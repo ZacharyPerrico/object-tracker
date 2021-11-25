@@ -1,7 +1,7 @@
 /*------------------------------*\
  *                              *
  *  Java Script Object Tracker  *
- *        Version 2.4.2         *
+ *         Version 2.4          *
  *                              *
  *       Zachary Perrico        *
  *                              *
