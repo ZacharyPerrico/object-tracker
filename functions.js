@@ -54,7 +54,6 @@ SAVE_DELTA_VELOCITY_Y = false,
 SAVE_ACCELERATION_Y   = true,
 
 // Calculation Options
-
 CALC_RADIUS = 10, 
 CALC_SKIP   =  1, // Default: 1
 
