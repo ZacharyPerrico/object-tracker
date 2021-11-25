@@ -21,7 +21,7 @@ bounds = {
   yMax: 214,
 };
 
-fileName = GIF_THROW;
+fileName = "GIF_THROW";
 
 fps = 240; // Usually 240
 

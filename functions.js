@@ -13,10 +13,12 @@
 
 const 
 
-GIF_DROP   = "https://i.imgur.com/qMYrKjb.gif",
-GIF_TABLE  = "https://i.imgur.com/49Sft56.gif",
-GIF_THROW = "https://i.imgur.com/BdRE0kF.gif";
-GIF_BOUNCE = "https://i.imgur.com/bRX8lp7.gif";
+gifs = {
+GIF_DROP   : "https://i.imgur.com/qMYrKjb.gif",
+GIF_TABLE  : "https://i.imgur.com/49Sft56.gif",
+GIF_THROW  : "https://i.imgur.com/BdRE0kF.gif",
+GIF_BOUNCE : "https://i.imgur.com/bRX8lp7.gif",
+};
 
 // Original
 // GIF_THROW  = "https://i.imgur.com/f0vlKyy.gif",
@@ -139,7 +141,7 @@ function setup() {
   mainCanvas.style('display', 'block');
   
   if (fileName) {
-    gif = loadImage(fileName, img => {
+    gif = loadImage(gifs[fileName], img => {
       gif = img;
       setupTracker();
     });
@@ -463,7 +465,6 @@ function draw() {
       currentFrame = frameSlider.value();
       pixl = [];
       searchPixels(gifFrames[currentFrame]);
-    // }
   } else {
     if (currentFrame < gifFrames.length - 1) {
       currentFrame++;
