@@ -1,1 +1,1 @@
-# object-tracker
+# A Java Script Color Based Object Tracker
