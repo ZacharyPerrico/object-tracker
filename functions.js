@@ -652,10 +652,11 @@ function highlightObject() {
   }
   
   // Highlight Center
-  // stroke(LOCATION_COLOR);
-  // strokeWeight(10);
-  // point(objectData.x[currentFrame], gifH - objectData.y[currentFrame]);
-  
+  stroke(LOCATION_COLOR);
+  strokeWeight(10);
+  if (!isNaN(objectData.x[currentFrame]) && !isNaN(objectData.y[currentFrame])) {
+    point(objectData.x[currentFrame], gifH - objectData.y[currentFrame]);
+  }
   pop();
 }
     
