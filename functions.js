@@ -10,22 +10,6 @@
  *                              *
 \*------------------------------*/
 
-/*======*\
- * GIFs *
-\*======*/
-
-const 
-
-gifs = {
-GIF_DROP   : "https://i.imgur.com/qMYrKjb.gif",
-GIF_TABLE  : "https://i.imgur.com/49Sft56.gif",
-GIF_THROW  : "https://i.imgur.com/BdRE0kF.gif",
-GIF_BOUNCE : "https://i.imgur.com/bRX8lp7.gif",
-};
-
-// Original
-// GIF_THROW  = "https://i.imgur.com/f0vlKyy.gif",
-
 /*==========*\
  * Settings *
 \*==========*/
@@ -57,8 +41,8 @@ SAVE_DELTA_VELOCITY_Y = false,
 SAVE_ACCELERATION_Y   = true,
 
 // Calculation Options
-CALC_RADIUS = 10, 
-CALC_SKIP   =  1, // Default: 1
+CALC_RADIUS = 10, // Default: 10
+CALC_SKIP   =  1, // Default:  1
 
 // Optional Features
 DISABLE_FILE_IMPORTS  = true, // WIP
@@ -143,7 +127,7 @@ function setup() {
   mainCanvas.style('display', 'block');
   
   if (fileName) {
-    gif = loadImage(gifs[fileName], img => {
+    gif = loadImage(fileName, img => {
       gif = img;
       setupTracker();
     });

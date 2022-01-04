@@ -10,6 +10,18 @@
  *                              *
 \*------------------------------*/
 
+// Example Gifs
+const GIFS = {
+  DROP   : "https://i.imgur.com/qMYrKjb.gif",
+  TABLE  : "https://i.imgur.com/49Sft56.gif",
+  THROW  : "https://i.imgur.com/BdRE0kF.gif",
+  BOUNCE : "https://i.imgur.com/bRX8lp7.gif",
+};
+
+// fileName supports Imgur URLs
+// Erase line to select from computer
+fileName = GIFS.THROW;
+
 ruler = {
   x1: 55, 
   y1: 10,
@@ -23,8 +35,6 @@ bounds = {
   xMax: 208,
   yMax: 214,
 };
-
-fileName = "GIF_THROW";
 
 fps = 240; // Usually 240
 
