@@ -4,6 +4,9 @@
  *         Version 2.4          *
  *                              *
  *       Zachary Perrico        *
+ *         Chris Orban          *
+ *              &               *
+ *          STEMcoding          *
  *                              *
 \*------------------------------*/
 

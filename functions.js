@@ -4,6 +4,9 @@
  *         Version 2.4          *
  *                              *
  *       Zachary Perrico        *
+ *         Chris Orban          *
+ *              &               *
+ *          STEMcoding          *
  *                              *
 \*------------------------------*/
 
@@ -271,7 +274,6 @@ function setupTracker() {
     }
   }
   
-  
   /*---------*\
   | Variables |
   \*---------*/
@@ -402,6 +404,7 @@ function adjustSize() {
   // Interactives
   frameSlider.size(width * 22/32, height * 1/16);
   frameSlider.position(width * 5/32, height * 15/16);
+  frameSlider.mousePressed(function(){paused=true;pauseButton.html('Play');});
   
   // fullButton.position(width / 2, height * 14/16);
   // fullButton.size(width / 8, height / 16);
@@ -473,6 +476,7 @@ function draw() {
     frameSlider.value(currentFrame);
     pixl = [];
     searchPixels(gifFrames[currentFrame]);
+    // frame.remove();  // very important for conserving memory!!!
   }
   
   push();
