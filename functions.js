@@ -135,7 +135,7 @@ function setup() {
     fileInput = createFileInput(handleFile);
     fileInput.position(0, 0);
   }
-    
+  frameRate(15);
   this.focus();
 }
 
@@ -151,11 +151,13 @@ function setupTracker() {
   
   // Number of frames
   numFrames = gif.numFrames();
-  
+    
   /*-----*\
   |  DOM  |
   \*-----*/
-  
+
+  frameSlider = createSlider(0, numFrames - 1, 0);
+    
   // fullButton = createButton('full');
   // fullButton.style('padding: 0px 0px');
   // fullButton.mousePressed(() => {
@@ -257,7 +259,9 @@ function setupTracker() {
       
     }
   }
-  
+
+  adjustSize();
+    
   /*---------*\
   | Variables |
   \*---------*/
@@ -325,7 +329,8 @@ function setupTracker() {
     });
     
   // Load each frame
-  
+
+    /*
   if (isMobile) {
 
     for (let i = 0; i < numFrames; i++) {
@@ -358,7 +363,8 @@ function setupTracker() {
   frameSlider = createSlider(0, gifFrames.length - 1, 0);
     
   adjustSize();
-    
+*/    
+
   framesLoaded = true;
   logStatus("gif Loaded");
 }
@@ -448,26 +454,35 @@ function draw() {
     if (paused) {  
     // if (currentFrame != frameSlider.value()) 
     // {
-      currentFrame = frameSlider.value();
-      pixl = [];
-      searchPixels(gifFrames[currentFrame]);
+    currentFrame = frameSlider.value();
+    pixl = [];
+    let frame = createGraphics(gifW, gifH);  
+    frame.pixelDensity(1);
+    gif.setFrame(currentFrame);
+    frame.image(gif,0,0);
+//    searchPixels(frame);
+    frame.remove();  // very important for conserving memory!!!	
   } else {
-    if (currentFrame < gifFrames.length - 1) {
+    if (currentFrame < numFrames - 1) {
       currentFrame++;
     } else {
       currentFrame = 0;
     }
     frameSlider.value(currentFrame);
     pixl = [];
-    searchPixels(gifFrames[currentFrame]);
-    // frame.remove();  // very important for conserving memory!!!
+    let frame = createGraphics(gifW, gifH);  
+    frame.pixelDensity(1);
+    gif.setFrame(currentFrame);
+    frame.image(gif,0,0);
+    searchPixels(frame);
+    frame.remove();  // very important for conserving memory!!!
   }
   
   push();
   translate(dispX, dispY);
   scale(dispW / gifW, dispH / gifH);
     
-  gif.pause();
+//  gif.pause();
   gif.setFrame(currentFrame);
   image(gif, 0, 0);
     
@@ -637,7 +652,7 @@ function highlightObject() {
   
   // Highlight Center
   stroke(LOCATION_COLOR);
-  strokeWeight(10);
+  strokeWeight(2);
   if (!isNaN(objectData.x[currentFrame]) && !isNaN(objectData.y[currentFrame])) {
     point(objectData.x[currentFrame], gifH - objectData.y[currentFrame]);
   }
