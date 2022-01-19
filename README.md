@@ -1,5 +1,5 @@
 # A Java Script Color Based Object Tracker
 
-The curent version is still a work in progress.
+The curent version is highly unstable.
 
-Developed by Zack Perrico and Chris Orban
+Developed by Zack Perrico and Chris Orban.

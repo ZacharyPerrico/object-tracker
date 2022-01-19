@@ -1,14 +1,19 @@
 /*------------------------------*\
  *                              *
  *  Java Script Object Tracker  *
- *         Version 2.4          *
- *                              *
- *       Zachary Perrico        *
- *         Chris Orban          *
- *              &               *
- *          STEMcoding          *
  *                              *
 \*------------------------------*/
+
+/*======*\
+ * GIFs *
+\*======*/
+
+const 
+
+GIF_DROP   = "https://i.imgur.com/qMYrKjb.gif",
+GIF_TABLE  = "https://i.imgur.com/49Sft56.gif",
+GIF_THROW  = "https://i.imgur.com/f0vlKyy.gif",
+GIF_BOUNCE = "https://i.imgur.com/bRX8lp7.gif";
 
 /*==========*\
  * Settings *
@@ -41,8 +46,9 @@ SAVE_DELTA_VELOCITY_Y = false,
 SAVE_ACCELERATION_Y   = true,
 
 // Calculation Options
-CALC_RADIUS = 10, // Default: 10
-CALC_SKIP   =  1, // Default:  1
+
+CALC_RADIUS = 10, 
+CALC_SKIP   =  1, // Default: 1
 
 // Optional Features
 DISABLE_FILE_IMPORTS  = true, // WIP
@@ -120,11 +126,7 @@ function clearObjectData() {
 \*=======*/
 
 function setup() {
-
   clearObjectData();
-  
-  mainCanvas = createCanvas(400, 400);
-  mainCanvas.style('display', 'block');
   
   if (fileName) {
     gif = loadImage(fileName, img => {
@@ -135,7 +137,7 @@ function setup() {
     fileInput = createFileInput(handleFile);
     fileInput.position(0, 0);
   }
-  frameRate(15);
+    
   this.focus();
 }
 
@@ -144,124 +146,15 @@ function setup() {
 \*==============*/
 
 function setupTracker() {
-  logStatus("Setting up frames");
   
   gifW = gif.width;
   gifH = gif.height;
-  
+   
   // Number of frames
   numFrames = gif.numFrames();
-    
-  /*-----*\
-  |  DOM  |
-  \*-----*/
-
-  frameSlider = createSlider(0, numFrames - 1, 0);
-    
-  // fullButton = createButton('full');
-  // fullButton.style('padding: 0px 0px');
-  // fullButton.mousePressed(() => {
-  //   fullscreen(!fullscreen());
-  // });
+ 
+  setupGUI();
   
-  // Pause Button
-  pauseButton = createButton('Pause');
-  pauseButton.style('-webkit-appearance: none'); 
-  pauseButton.style('-webkit-box-sizing: border-box');
-  pauseButton.style('-webkit-color: #ffffff');
-  pauseButton.style('border-radius: 0');  
-  pauseButton.mousePressed(()=>{
-    paused = !paused;
-    if (paused) {pauseButton.html('Play')} 
-    else {pauseButton.html('Pause')}
-    pauseButton.size(width / 8, height / 16);
-  });
-  
-  
-  // Save Button
-  saveButton = createButton('Save');
-  saveButton.style('-webkit-box-sizing: border-box;');
-  saveButton.mousePressed(()=>{
-    saveData();
-  });
-  
-  // Color Defaults
-  objectColors ??= [];
-  backgroundColors ??= [];
-  
-  // Color Pickers
-  const A = [objColors, bgnColors];
-  const R = [objectColors, backgroundColors];
-    
-  for (let i in [0,1]) {
-    A[i].colors = [];
-  
-    A[i].remove = createButton('-');
-    A[i].remove.mousePressed( () => {
-      paused = true;
-      pauseButton.html('Play');
-      clearObjectData();
-      
-      // Remove DOM element
-      A[i].colors[A[i].colors.length - 1].remove();
-      
-      // Remove p5.js Element
-      A[i].colors.pop();
-      
-      // Remove color value reference
-      [objectColors, backgroundColors][i].pop();
-      
-      adjustSize();
-    });
-
-    A[i].add = createButton('+')
-    A[i].add.mousePressed( () => {
-      paused = true;
-      pauseButton.html('Play');
-      clearObjectData()
-      
-      // Create p5.js Element
-      const CP = createColorPicker("#000000");
-      
-      // Create reference number
-      const I = R[i].length;
-      
-      // Assign function to color picker
-      CP.input(() => {
-        R[i][I] = CP.color().levels.slice(0, 3);
-        paused = true;
-        pauseButton.html('Play');
-        clearObjectData();
-      });
-      
-      // Add CP to object storage
-      A[i].colors.push(CP);
-      
-      // Add color reference
-      R[i][I] = [0,0,0];
-      
-      adjustSize();
-    });
-
-    for (let j = 0; j < R[i].length; j++) {
-      const CP = createColorPicker(color(
-        R[i][j]).toString()
-      );
-      
-      CP.input(() => {
-        R[i][j] = CP.color().levels.slice(0, 3);
-        paused = true;
-        pauseButton.html('Play');
-        clearObjectData();
-      });
-      
-      A[i].colors[j] = CP;
-      
-    }
-  }
-
-  adjustSize();
-    
   /*---------*\
   | Variables |
   \*---------*/
@@ -312,138 +205,19 @@ function setupTracker() {
   | Frames |
   \*------*/
   
-  // Check if device is mobile / tablet
-  
-    const toMatch = [
-        /Android/i,
-        /webOS/i,
-        /iPhone/i,
-        /iPad/i,
-        /iPod/i,
-        /BlackBerry/i,
-        /Windows Phone/i
-    ];
-    
-    const isMobile = toMatch.some((toMatchItem) => {
-        return navigator.userAgent.match(toMatchItem);
-    });
-    
   // Load each frame
-
-    /*
-  if (isMobile) {
-
-    for (let i = 0; i < numFrames; i++) {
-
-    gifFrames[i] = createGraphics(gifW, gifH);
-    gifFrames[i].pixelDensity(1);
-    gifFrames[i].image(gif, 0, 0);
-
-    gif.pause();
-    gif.setFrame(i+1);
-
-    }    
-
-  } else {
-
-    for (let i = 0; i < numFrames; i++) {
-
-    gifFrames[i] = createGraphics(gifW, gifH);
-    gifFrames[i].pixelDensity(1);
-    gifFrames[i].image(gif, 0, 0);
-
+  for (let i = 0; i < numFrames; i++) {
+    let frame = createGraphics(gifW, gifH);
+    frame.pixelDensity(1);
     gif.pause();
     gif.setFrame(i);
-
-    }
-    
+    frame.image(gif, 0, 0);
+    gifFrames.push(frame)
   }
-  
-  // Frame Slider
-  frameSlider = createSlider(0, gifFrames.length - 1, 0);
     
-  adjustSize();
-*/    
-
   framesLoaded = true;
-  logStatus("gif Loaded");
 }
 
-/*==========*\
- * Resizing *
-\*==========*/
-    
-function adjustSize() {
-  resizeCanvas(windowWidth, windowHeight);
-  
-  C = min(width, height);
-  
-  // Find the shortest side
-  const M = min(width / gifW, height / gifH * 7/8);
-
-  // Adjust the size of the...
-  
-  // Frame's size
-  dispW = gifW * M;
-  dispH = gifH * M;
-
-  // Frames's offset
-  dispX = (width - dispW) / 2;
-  dispY = (height - dispH) / 2;
-  
-  // Interactives
-  frameSlider.size(width * 22/32, height * 1/16);
-  frameSlider.position(width * 5/32, height * 15/16);
-  frameSlider.mousePressed(function(){paused=true;pauseButton.html('Play');});
-  
-  // fullButton.position(width / 2, height * 14/16);
-  // fullButton.size(width / 8, height / 16);
-  
-  pauseButton.position(0, height * 15/16);
-  pauseButton.size(width / 8, height / 16);
-  pauseButton.style('padding: 0px 0px');
-  pauseButton.style('font-size:' + C / 40 + 'px;');
-  
-  saveButton.position(width * 7/8, height * 15/16);
-  saveButton.size(width / 8, height / 16);
-  saveButton.style('padding: 0px 0px');
-  saveButton.style('font-size:' + C / 40 + 'px;'); 
-  
-  // Color Pickers
-  const A = [bgnColors, objColors];
-  for (let i of [0, 1]) {
-    const N = A[i].colors.length;
-    const W = width / 2 / (N + 1);
-    
-    A[i].remove.size(W / 2, height / 16);
-    A[i].remove.position(W * (N + 1) - width / 2 * i, 0);
-
-    A[i].add.size(W / 2, height / 16);
-    A[i].add.position(W * (2 * N + 3 / 2) - width / 2 * i, 0);
-
-    for (let j = 0; j < N; j++) {
-      A[i].colors[j].size(W, height / 16);
-      A[i].colors[j].position(W * (j + N + 3 / 2) - width / 2 * i, 0);
-      A[i].colors[j].style('-webkit-box-sizing: border-box;');
-  
-    }
-  }
-  
-}
-    
-/*=================*\
- * Console Updates *
-\*=================*/
-
-function logStatus(s0, s1, s2) {
-  if (s2!==undefined) {
-    s0 += ' [' + s1 + '/' + s2 + ']';
-  } else if (s1!==undefined) {
-    s0 += ' [' + s1 + ']';
-  }
-  if (DEBUG_MODE) print(s);
-}
-    
 /*======*\
  * Draw *
 \*======*/
@@ -452,16 +226,12 @@ function draw() {
   background(0);
   if (framesLoaded) {
     if (paused) {  
-    // if (currentFrame != frameSlider.value()) 
-    // {
-    currentFrame = frameSlider.value();
-    pixl = [];
-    let frame = createGraphics(gifW, gifH);  
-    frame.pixelDensity(1);
-    gif.setFrame(currentFrame);
-    frame.image(gif,0,0);
-//    searchPixels(frame);
-    frame.remove();  // very important for conserving memory!!!	
+    if (currentFrame != frameSlider.value()) 
+    {
+      currentFrame = frameSlider.value();
+      pixl = [];
+      searchPixels(gifFrames[currentFrame]);
+    }
   } else {
     if (currentFrame < numFrames - 1) {
       currentFrame++;
@@ -470,54 +240,43 @@ function draw() {
     }
     frameSlider.value(currentFrame);
     pixl = [];
-    let frame = createGraphics(gifW, gifH);  
-    frame.pixelDensity(1);
-    gif.setFrame(currentFrame);
-    frame.image(gif,0,0);
-    searchPixels(frame);
-    frame.remove();  // very important for conserving memory!!!
+    searchPixels(gifFrames[currentFrame]);
   }
   
   push();
-  translate(dispX, dispY);
-  scale(dispW / gifW, dispH / gifH);
+  scale(width / gifW, height / gifH);
+  image(gifFrames[currentFrame], 0, 0);
     
-//  gif.pause();
-  gif.setFrame(currentFrame);
-  image(gif, 0, 0);
+  if (!!objectData.x[currentFrame]) {
+    // drawArrow(
+    //   50 * objectData.vx[currentFrame], 
+    //   50 * objectData.vy[currentFrame], 
+    //   "Red",
+    // );
+    drawArrow(
+      50 * objectData.vx[currentFrame], 
+      0, 
+      "Red",
+    );
+    drawArrow(
+      0, 
+      50 * objectData.vy[currentFrame], 
+      "Red",
+    );
+  }
     
-  // image(gifFrames[currentFrame], 0, 0);
-    
-  // if (!!objectData.x[currentFrame]) {
-  //   // drawArrow(
-  //   //   50 * objectData.vx[currentFrame], 
-  //   //   50 * objectData.vy[currentFrame], 
-  //   //   "Red",
-  //   // );
-  //   drawArrow(
-  //     50 * objectData.vx[currentFrame], 
-  //     0, 
-  //     "Red",
-  //   );
-  //   drawArrow(
-  //     0, 
-  //     50 * objectData.vy[currentFrame], 
-  //     "Red",
-  //   );
-  // }
-    
-  // if (!!objectData.x[currentFrame]) {
-  //   drawArrow(
-  //     100 * objectData.ax[currentFrame], 
-  //     0, 
-  //     "Blue",
-  //   );
-  //   drawArrow(
-  //     0, 
-  //     100 * objectData.ay[currentFrame], 
-  //     "Blue",
-  //   );
-  // }
+  if (!!objectData.x[currentFrame]) {
+    drawArrow(
+      100 * objectData.ax[currentFrame], 
+      0, 
+      "Blue",
+    );
+    drawArrow(
+      0, 
+      100 * objectData.ay[currentFrame], 
+      "Blue",
+    );
+  }
     
   highlightObject();
   drawBounds(bounds.xMin, bounds.yMin, bounds.xMax, bounds.yMax);
@@ -580,7 +339,7 @@ function searchPixels(frame) {
   objectData.x[currentFrame] = sumOf.x / pixl.length
   objectData.y[currentFrame] = sumOf.y / pixl.length
   
-  // calculateVectorQuantities()
+  calculateVectorQuantities()
   
 }
 
@@ -594,157 +353,41 @@ function colorDif(c1, c2) {
   return sqrt((r2 - r1) ** 2 + (g2 - g1) ** 2 + (b2 - b1) ** 2) / 256;
 }
     
-// function calculateVectorQuantities() {
-//   const C = CALC_RADIUS
+function calculateVectorQuantities() {
+  const C = CALC_RADIUS
   
-//   // Time and Position
-//     for (let i = 0; i < numFrames; i += CALC_SKIP) {
-//       objectData.t[i] = i;    
-//     }
+  // Time and Position
+    for (let i = 0; i < numFrames; i += CALC_SKIP) {
+      objectData.t[i] = i;    
+    }
   
-//   // Delta Time and Delta Position
-//     for (let i = 0; i < numFrames; i += CALC_SKIP) {
-//       objectData.dx[i] = objectData.x[i+C] - objectData.x[i]
-//       objectData.dy[i] = objectData.y[i+C] - objectData.y[i]
-//       objectData.dt[i] = objectData.t[i+C] - objectData.t[i]
-//     }
+  // Delta Time and Delta Position
+    for (let i = 0; i < numFrames; i += CALC_SKIP) {
+      objectData.dx[i] = objectData.x[i+C] - objectData.x[i]
+      objectData.dy[i] = objectData.y[i+C] - objectData.y[i]
+      objectData.dt[i] = objectData.t[i+C] - objectData.t[i]
+    }
 
-//   // Velocity
-//     for (let i = 0; i < numFrames; i += CALC_SKIP) {
-//       objectData.vx[i] = objectData.dx[i] / objectData.dt[i]
-//       objectData.vy[i] = objectData.dy[i] / objectData.dt[i]
-//     }
+  // Velocity
+    for (let i = 0; i < numFrames; i += CALC_SKIP) {
+      objectData.vx[i] = objectData.dx[i] / objectData.dt[i]
+      objectData.vy[i] = objectData.dy[i] / objectData.dt[i]
+    }
   
-//   // Delta Velocity
-//   for (let i = 0; i < numFrames; i += CALC_SKIP) {
-//     objectData.dvx[i] = objectData.vx[i+C] - objectData.vx[i]
-//     objectData.dvy[i] = objectData.vy[i+C] - objectData.vy[i]
-//   }
-  
-//   // Acceleration
-//   for (let i = 0; i < numFrames; i += CALC_SKIP) {
-//     objectData.ax[i] = objectData.dvx[i] / objectData.dt[i]
-//     objectData.ay[i] = objectData.dvy[i] / objectData.dt[i]
-//   }
-  
-// }
-    
-/*=================*\
- * Tracker Visuals *
-\*=================*/
-
-function highlightObject() {
-  push();  
-  
-  // Highlight Object
-  stroke(OBJECT_COLOR);
-  strokeWeight(2);
-  for (let i = 1; i < pixl.length; i += 1) {
-    point(pixl[i].x, gifH - pixl[i].y);
-  }
-
-  // Highlight Path
-  stroke(PATH_COLOR);
-  for (let i = 0; i < objectData.y.length; i += 1) {
-    if (objectData.x[i] != null)
-      point(objectData.x[i], gifH - objectData.y[i]);
+  // Delta Velocity
+  for (let i = 0; i < numFrames; i += CALC_SKIP) {
+    objectData.dvx[i] = objectData.vx[i+C] - objectData.vx[i]
+    objectData.dvy[i] = objectData.vy[i+C] - objectData.vy[i]
   }
   
-  // Highlight Center
-  stroke(LOCATION_COLOR);
-  strokeWeight(2);
-  if (!isNaN(objectData.x[currentFrame]) && !isNaN(objectData.y[currentFrame])) {
-    point(objectData.x[currentFrame], gifH - objectData.y[currentFrame]);
+  // Acceleration
+  for (let i = 0; i < numFrames; i += CALC_SKIP) {
+    objectData.ax[i] = objectData.dvx[i] / objectData.dt[i]
+    objectData.ay[i] = objectData.dvy[i] / objectData.dt[i]
   }
-  pop();
+  
 }
     
-function drawArrow (x, y, c) {
-  const M = mag(x, y);
-  if (M === 0) return;
-  const C = min(width, height);
-  push()
-  translate(objectData.x[currentFrame], gifH - objectData.y[currentFrame]);
-  rotate(atan2(-y, x));  
-  stroke(c);
-  fill(c);
-  line(0, 0, M - C * 1/256, 0);
-  noStroke();
-  triangle(
-    M - C * 3/256, C * -1/256,
-    M            , 0         ,
-    M - C * 3/256, C *  1/256,
-  );
-  pop();
-}
-    
-function drawRuler(x1, y1, x2, y2) {
-  push();
-  
-  fill(255);
-  stroke(0);
-  strokeWeight(1);
-  
-  translate(x1, gifH - y1);
-  rotate(atan2(x2 - x1, y2 - y1));
-  
-  rect(-C/240, 0, C/120, -dist(x1, y1, x2, y2));
-  
-  pop();
-}
-    
-function drawBounds(x1, y1, x2, y2) {
-  push();
-  
-  strokeWeight(4);
-  stroke(BOUNDS_COLOR);
-  noFill();
-  rect(x1, gifH - y1, x2 - x1, y1 - y2);
-
-  strokeWeight(2);
-  rectMode(CENTER);
-
-  fill(BOUNDS_MIN_COLOR);
-  rect(x1, gifH - y1, 10);
-
-  fill(BOUNDS_MAX_COLOR);
-  rect(x2, gifH - y2, 10);
-
-  strokeWeight(1);
-
-  stroke(BOUNDS_MIN_COLOR);
-  line(x1, gifH - y1, x1, gifH - y1 - 20);
-  line(x1, gifH - y1, x1 + 20, gifH - y1);
-
-  stroke(BOUNDS_MAX_COLOR);
-  line(x2, gifH - y2, x2, gifH - y2 + 20);
-  line(x2, gifH - y2, x2 - 20, gifH - y2);
-
-  pop();
-}
-    
-function drawCoords() {
-  push();
-  
-  stroke(255);
-  strokeWeight(1);
-
-  textSize(14);
-
-  textAlign(LEFT, TOP);
-  text("(" + frameRate().toFixed(0) + ")", 3, 3);
-  
-  textAlign(LEFT, BOTTOM);
-  text("(0,0)", 3, gifH - 3);
-
-  textAlign(RIGHT, TOP);
-  text("(" + gifW + "," + gifH + ")", gifW - 3, 3);
-
-  textAlign(RIGHT, BOTTOM);
-  text("(" + currentFrame + ")", gifW - 3, gifH - 3);
-  
-  push();
-}
 
 /*===============*\
  * Input Control *
@@ -787,8 +430,7 @@ function windowResized() {
 \*=============*/
 
 function handleFile(file) {
-  logStatus('Loaded file', file.name);
-
+  
   fileInput.hide();
   
   switch (file.type) {
@@ -802,7 +444,6 @@ function handleFile(file) {
   
     case 'video':
       var video = createVideo(file.data, () => {
-        logStatus('Converting mp4');
         video.hide();
 
         gifshot.createGIF({
@@ -817,7 +458,6 @@ function handleFile(file) {
           },
           function (obj) {
             if (!obj.error) {
-              logStatus('Creating gif');
               var image = obj.image;
               var animatedImage = document.createElement("img");
               animatedImage.src = image;
@@ -909,7 +549,6 @@ function saveData() {
 
   // Add Row for each frame
   for (let f = 0; f < numFrames; f += CALC_SKIP) {
-    logStatus('Saving', f, numFrames - 1);
     let newRow = table.addRow();
     for (let c in tableData) {
       if (SAVE_COLUMN[c]) newRow.setNum(c+"", tableData[c][f])
@@ -917,5 +556,4 @@ function saveData() {
   }
   
   saveTable(table, "data.csv");
-  logStatus('Saved');
 }

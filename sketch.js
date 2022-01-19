@@ -1,7 +1,7 @@
 /*------------------------------*\
  *                              *
  *  Java Script Object Tracker  *
- *         Version 2.4          *
+ *         Version 3.0          *
  *                              *
  *       Zachary Perrico        *
  *         Chris Orban          *
